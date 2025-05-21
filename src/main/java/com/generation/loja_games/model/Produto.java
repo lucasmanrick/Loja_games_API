@@ -1,10 +1,13 @@
 package com.generation.loja_games.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
@@ -28,6 +31,9 @@ public class Produto {
 	@Size(min = 1, max = 50, message = "A plataforma compativel com o jogo deve conter no minimo 1 e no maximo 50 caracteres")
 	private String compatibilidade;
 	
+	@NotNull(message = "o preço do jogo deve ser preenchido")
+	private double preco;
+	
 	@Max(2025)
 	@NotNull(message = "o ano que o jogo foi fabricado não pode ser nullo")
 	private int ano;
@@ -36,6 +42,30 @@ public class Produto {
 	@Size(min = 0, max = 5000, message = "o link que referencia a imagem do produto deve conter entre 0 e 5000 caracteres")
 	private String imagem;
 	
+	
+	@ManyToOne
+	@JsonIgnoreProperties("produto")
+	private Categoria categoria;
+	
+	
+	
+	
+	public double getPreco() {
+		return preco;
+	}
+
+	public void setPreco(double preco) {
+		this.preco = preco;
+	}
+
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
+
 	public Long getId() {
 		return id;
 	}

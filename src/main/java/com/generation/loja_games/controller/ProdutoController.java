@@ -1,6 +1,8 @@
 package com.generation.loja_games.controller;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.generation.loja_games.model.Produto;
+import com.generation.loja_games.repository.CategoriaRepository;
 import com.generation.loja_games.repository.ProdutoRepository;
 
 import jakarta.validation.Valid;
@@ -30,6 +33,9 @@ public class ProdutoController {
 	
 	@Autowired
 	private ProdutoRepository produtoRepository;
+	
+	@Autowired
+	private CategoriaRepository categoriaRepository;
 	
 	
 	@GetMapping() 
@@ -51,12 +57,52 @@ public class ProdutoController {
 	}
 	
 	
+	@GetMapping("precoMenorQue/{preco}")
+	private ResponseEntity<List<Produto>> getAllProductsLessThen (@PathVariable Double preco) {
+		
+		if(preco == null) {
+			return ResponseEntity.badRequest().build();
+		}
+		
+	 List<Produto> result = produtoRepository.findAll()
+			 	.stream()
+			 	.filter(produto -> produto.getPreco() <= preco)
+			 	.collect(Collectors.toList());
+	 
+	 	return ResponseEntity.ok(result);
+	}
+	
+	
+	
+	@GetMapping("precoMaiorQue/{preco}")
+	private ResponseEntity<List<Produto>> getAllProductsMoreThen (@PathVariable Double preco) {
+		
+		if(preco == null) {
+			return ResponseEntity.badRequest().build();
+		}
+		
+	 List<Produto> result = produtoRepository.findAll()
+			 	.stream()
+			 	.filter(produto -> produto.getPreco() >= preco)
+			 	.collect(Collectors.toList());
+	 
+	 	return ResponseEntity.ok(result);
+	}
+	
+	
 	@PostMapping()
 	private ResponseEntity<Produto> create (@Valid @RequestBody Produto produto) {
 		if(produto.getId() == null) {
-			return ResponseEntity.ok(produtoRepository.save(produto));
+			if(categoriaRepository.existsById(produto.getCategoria().getId())) {
+				return ResponseEntity.ok(produtoRepository.save(produto));
+			}else {
+			 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"a categoria que você esta tentando vincular o produto não existe ou nao foi encontrada tente novamente!", null);
+			}
+			
+		}else {
+			return ResponseEntity.badRequest().build();
 		}
-		return ResponseEntity.badRequest().build();
+		
 	}
 	
 	
@@ -65,7 +111,8 @@ public class ProdutoController {
 	private ResponseEntity<Produto> put (@Valid @RequestBody Produto produto) {
 		if(produto.getId() != null) {
 			if(produtoRepository.existsById(produto.getId())) {
-				return ResponseEntity.ok(produtoRepository.save(produto));
+				if(categoriaRepository.existsById(produto.getCategoria().getId()))
+					return ResponseEntity.ok(produtoRepository.save(produto));
 			}else {
 				return ResponseEntity.notFound().build();
 			}
