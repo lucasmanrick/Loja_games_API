@@ -1,12 +1,12 @@
 package com.generation.loja_games.model;
 
-
 import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -39,16 +39,15 @@ public class Usuario {
 	private String senha;
 
 	@NotNull
-	private LocalDate data_nascimento;
+	@Column(columnDefinition = "DATE")
+	private LocalDate dataNascimento;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties("usuario")
 	private List<Produto> produto;
 
-	/* Insira os Getters and Setters */
-
 	public Long getId() {
-		return this.id;
+		return id;
 	}
 
 	public void setId(Long id) {
@@ -56,7 +55,7 @@ public class Usuario {
 	}
 
 	public String getNome() {
-		return this.nome;
+		return nome;
 	}
 
 	public void setNome(String nome) {
@@ -64,7 +63,7 @@ public class Usuario {
 	}
 
 	public String getUsuario() {
-		return this.usuario;
+		return usuario;
 	}
 
 	public void setUsuario(String usuario) {
@@ -72,13 +71,20 @@ public class Usuario {
 	}
 
 	public String getSenha() {
-		return this.senha;
+		return senha;
 	}
 
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
 
+	public LocalDate getDataNascimento() {
+		return dataNascimento;
+	}
+
+	public void setDataNascimento(LocalDate dataNascimento) {
+		this.dataNascimento = dataNascimento;
+	}
 
 	public List<Produto> getProduto() {
 		return produto;
@@ -88,13 +94,7 @@ public class Usuario {
 		this.produto = produto;
 	}
 
-	public LocalDate getData_nascimento() {
-		return data_nascimento;
-	}
-
-	public void setData_nascimento(LocalDate data_nascimento) {
-		this.data_nascimento = data_nascimento;
-	}
+	
 
 	
 
