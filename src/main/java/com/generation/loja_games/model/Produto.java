@@ -47,7 +47,8 @@ public class Produto {
 	@JsonIgnoreProperties("produto")
 	private Categoria categoria;
 	
-	
+	@JsonIgnoreProperties("produto")
+	private Usuario usuario;
 	
 	
 	public double getPreco() {

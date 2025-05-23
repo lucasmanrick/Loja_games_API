@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.generation.loja_games.model.Categoria;
-import com.generation.loja_games.model.Produto;
 import com.generation.loja_games.repository.CategoriaRepository;
 
 import jakarta.validation.Valid;
